@@ -1,12 +1,22 @@
-import { Dbcon } from "./src/config/configration.js";
+import cors from "cors";
 import chalk from "chalk";
 import { config } from "dotenv";
 import express, { json, urlencoded } from "express";
-import cors from "cors";
+import { Dbcon } from "./src/config/configration.js";
+import { ApolloServer } from "apollo-server-express";
+import { typeDefs, resolvers } from "./src/graphql/index.js";
 
 Dbcon();
+config();
 
+const server = new ApolloServer({
+  typeDefs: [typeDefs],
+  resolvers: [resolvers],
+});
+
+await server.start();
 const app = express();
+server.applyMiddleware({ app });
 const coreConfig = {
   origin: "*",
   Credential: true,
